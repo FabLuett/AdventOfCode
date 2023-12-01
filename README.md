@@ -1,4 +1,4 @@
-# Repository for Advent Of Code code snippets
+# Advent Of Code Contributions
 
 In 2023 i finally began the Advent of Code contest.
 Each year i try to use a different programming language :)
