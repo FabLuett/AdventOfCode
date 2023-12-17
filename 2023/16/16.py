@@ -80,25 +80,18 @@ def visit (startdirection, startposition, writeLines = False):
         way.append((direction, position, steps))
         currentchar = field[position[0]][position[1]]
         if currentchar == ".": 
-            #visit (direction, add(position, direction), writeLines)
             stack.insert (0,(direction, add (position, direction)))
         elif currentchar == "|":
             if direction[1] == 0:
-                #visit (direction, add(position, direction), writeLines)
                 stack.insert (0,(direction, add (position, direction)))
             else:
-                #visit ( (-1,0), add(position, (-1,0)), writeLines)
-                #visit ( (1,0), add (position, (1,0)), writeLines)
                 stack.insert (0,((-1,0), add (position, (-1,0))))
                 stack.insert (1,((1,0), add (position, (1,0))))
         elif currentchar == "-":
             if direction[1] == 0:
-                #visit ( (0,1), add (position, (0,1)), writeLines)
-                #visit ( (0,-1), add(position, (0,-1)), writeLines)
                 stack.insert (0,((0,1), add (position, (0, 1))))
                 stack.insert (1,((0,-1), add (position, (0, -1))))
             else:
-                #visit (direction, add (position, direction), writeLines)
                 stack.insert (0,(direction, add (position, direction)))
         elif currentchar == "/":
             newdirection = None
@@ -110,7 +103,6 @@ def visit (startdirection, startposition, writeLines = False):
                 newdirection = (-1,0)
             else:
                 newdirection = (1, 0)
-            #visit ( newdirection, add (position, newdirection), writeLines)
             stack.insert (0,(newdirection, add (position, newdirection)))
         elif currentchar == "\\":
             newdirection = None
@@ -122,11 +114,7 @@ def visit (startdirection, startposition, writeLines = False):
                 newdirection = (1,0)
             else:
                 newdirection = (-1, 0)
-            #visit (newdirection, add (position, newdirection), writeLines)
             stack.insert (0,(newdirection, add (position, newdirection)))
-            
-    for item in way:
-        cache[(item[0], item[1])] = steps- item[2]
     
     return steps
     
@@ -153,7 +141,6 @@ for i in range(len(field)):
             num = visit ((0, -1), (i, j))
             if num > endsum:
                 endsum = num
-        print (i,j, endsum)
 
 print(endsum)
 pyperclip.copy(endsum)
