@@ -6,7 +6,7 @@ import re
 
 endsum = 0
 
-intervals = [(0,0)]
+intervals = [(0,1)]
 
 file = sys.argv[1]
 if '.txt' not in file:
@@ -15,11 +15,11 @@ if '.txt' not in file:
 with open(file) as f:
     endsum = 0
     x = 0
-    y = 0
+    y = 1
     for line in f.readlines():
         line = line.strip()
         if(line == ""):
-            continue
+            break
             
         splitted = line.split (" ")
         direction = splitted[0]
@@ -37,6 +37,8 @@ with open(file) as f:
 
 xvals = [k[0] for k in intervals]
 yvals = [k[1] for k in intervals]
+xoffset = min(xvals)
+yoffset = min(yvals)
 maxx = max(xvals) - min (xvals)
 maxy = max(yvals) - min(yvals)
 
@@ -51,36 +53,24 @@ lastInterval = intervals[0]
 for interval in intervals[1:]:
     startx = lastInterval[0]
     starty = lastInterval[1]
-    steps = max(lastInterval[1] - interval[1], lastInterval[0] - interval[0])
-    # shift
-    if interval[0] < 0:
-        # downwards
-        for i in range(-1*interval[0]):
-            field.insert(0, ["." for l in range(len(field[0]))])
-        steps = abs(lastInterval[0] - interval[0])
-    if interval[1] < 0:
-        # right wards
-        steps = abs(lastInterval[1] - interval[1])
-        for i in range(-1*interval[1]):
-            for j in range (len(field)):
-                field[j].insert(0, ".")
-        
-    # right and down
-    if lastInterval[0] < interval[0]:
-        for y in range(steps):
-            field[y+1][lastInterval[1]] = "#"
-    if lastInterval[1] < interval[1]:
-        for x in range(lastInterval[1], interval[1]):
-            field[lastInterval[0]][x+1] = "#"
-    # left and up
-    if interval[0] < lastInterval[0]:
-        for y in range(steps):
-            print("try y:",lastInterval, startx, startx + y, lastInterval[1])
-            field[startx + y][lastInterval[1]] = "#"
-    if interval[1] < lastInterval[1]:
-        for x in range(steps):
-            print("try x:", lastInterval[0], starty, x)
-            field[lastInterval[0]][starty - x] = "#"
+    steps = max(abs(lastInterval[1] - interval[1]), abs(lastInterval[0] - interval[0]))     
+    
+    for i in range(steps):
+        # up down
+        if interval[0] < lastInterval[0]:
+            #print("case 1", interval, lastInterval, i)
+            field[interval[0] + i][lastInterval[1]-1] = '#'
+        elif lastInterval[0] < interval[0]:
+            #print("Case 2", interval, lastInterval)
+            field[lastInterval[0] + i+1][interval[1]-1] = '#'
+        # left right
+        elif interval[1] < lastInterval[1]:
+            #print("Case 3")
+            field[lastInterval[0]][interval[1] + i-1] = '#'
+        else:
+            #print("Case 4")
+            field[lastInterval[0]][lastInterval[1] + i] = '#'
+
     print("After interval", interval, lastInterval)
     for i in range(len(field)):
         print(field[i])
@@ -93,8 +83,8 @@ for i in range(len(field)):
     idx2 = len(line) - line[::-1].index("#")
     #field[i] = line[:idx] + ["#" for i in range(idx2-idx)] + line[idx2:]
     endsum += idx2-idx#sum ( [1 if char == "#" else 0 for char in field[i]])
-    print(field[i])
+    #print(field[i])
 
 print(endsum)
-print(intervals)
+#print(intervals)
 pyperclip.copy(endsum)
